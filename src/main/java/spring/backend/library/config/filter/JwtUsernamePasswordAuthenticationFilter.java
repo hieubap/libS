@@ -3,6 +3,7 @@ package spring.backend.library.config.filter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,10 +26,10 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     private final AuthenticationManager authenticationManager;
     private final PropertiesConfiguration propertiesConfiguration;
     private final SecretKey secretKey;
-    @Autowired
-    private TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
-    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, PropertiesConfiguration propertiesConfiguration, SecretKey secretKey) {
+    public JwtUsernamePasswordAuthenticationFilter(TokenProvider tokenProvider,AuthenticationManager authenticationManager, PropertiesConfiguration propertiesConfiguration, SecretKey secretKey) {
+        this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.propertiesConfiguration = propertiesConfiguration;
         this.secretKey = secretKey;

@@ -33,6 +33,8 @@ public class Config extends WebSecurityConfigurerAdapter {
   protected PropertiesConfiguration propertiesConfiguration;
   @Autowired
   protected SecretKey secretKey;
+  @Autowired
+  protected TokenProvider tokenProvider;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -40,7 +42,7 @@ public class Config extends WebSecurityConfigurerAdapter {
       http
           .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
-          .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager(), propertiesConfiguration, secretKey))
+          .addFilter(new JwtUsernamePasswordAuthenticationFilter(tokenProvider,authenticationManager(), propertiesConfiguration, secretKey))
           .addFilterAfter(new TokenVerifierFilter(propertiesConfiguration, secretKey), JwtUsernamePasswordAuthenticationFilter.class);
     }
     http.csrf().disable()
