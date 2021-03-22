@@ -91,4 +91,9 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
     return getRepository().findById(id)
         .orElseThrow(() -> new DataException.NotFoundEntityById(id, getName()));
   }
+
+  @Override
+  public DTO findDTO(Long id) {
+    return mapToDTO(getRepository().findById(id).get());
+  }
 }

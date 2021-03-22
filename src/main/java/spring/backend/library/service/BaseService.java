@@ -11,4 +11,5 @@ public interface BaseService<DTO extends BaseDTO> {
   DTO save(Long id,DTO dto);
   DTO save(Long id, Map<String,Object> map);
   void delete(Long size);
+  DTO findDTO(Long id);
 }

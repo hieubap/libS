@@ -1,6 +1,7 @@
 package spring.backend.library.config.audit;
 
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -8,9 +9,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import spring.backend.library.config.userdetail.UserDetail;
 
 class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
+  @Value("${no.security}")
+  private boolean isSecurity;
 
   @Override
   public Optional<Long> getCurrentAuditor() {
+    if (!isSecurity){
+      return Optional.of(1L);
+    }
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || !authentication.isAuthenticated()
