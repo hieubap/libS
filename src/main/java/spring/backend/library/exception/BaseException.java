@@ -18,6 +18,6 @@ public class BaseException extends RuntimeException {
   }
 
   public BaseException(int code,String messsage){
-    responseBody = new ResponseEntity<>(400,messsage);
+    responseBody = new ResponseEntity<>(code,messsage);
   }
 }

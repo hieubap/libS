@@ -1,17 +1,16 @@
 package spring.backend.library.exception;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import spring.backend.library.dto.ResponseEntity;
 
 @RestControllerAdvice
-public class ErrorHandleController extends ResponseEntityExceptionHandler implements
-    ErrorController {
+public class ErrorHandleController extends ResponseEntityExceptionHandler{
+
+  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(BaseException.class)
   public ResponseEntity<?> handleBaseException(BaseException ex) {
     ResponseEntity<?> responseBody = ex.getResponseBody();
@@ -26,18 +25,5 @@ public class ErrorHandleController extends ResponseEntityExceptionHandler implem
     responseBody.setMessage(ex.getMessage());
 
     return responseBody;
-  }
-
-  @RequestMapping("/error")
-  public ResponseEntity<?> error(HttpServletRequest httpServletRequest){
-    System.out.println("ERROR");
-    int status = Integer.valueOf(httpServletRequest.getAttribute(RequestDispatcher.ERROR_STATUS_CODE).toString());
-
-    return new ResponseEntity<>(httpServletRequest.getAttribute(RequestDispatcher.ERROR_MESSAGE));
-  }
-
-  @Override
-  public String getErrorPath() {
-    return "/error";
   }
 }
