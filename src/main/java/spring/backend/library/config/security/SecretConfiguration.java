@@ -17,9 +17,4 @@ public class SecretConfiguration {
   public SecretKey secretKey(){
     return Keys.hmacShaKeyFor(propertiesConfiguration.getSecretKey().getBytes());
   }
-
-  @Bean
-  public PasswordEncoder passwordEncoder(){
-    return new BCryptPasswordEncoder(10);
-  }
 }

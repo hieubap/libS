@@ -1,96 +1,79 @@
 package spring.backend.library.config.filter;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import java.io.IOException;
-import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import spring.backend.library.config.dto.UsernameAndPasswordDto;
 import spring.backend.library.config.security.PropertiesConfiguration;
-import spring.backend.library.config.security.TokenProvider;
-import spring.backend.library.dto.ResponseEntity;
 import spring.backend.library.config.userdetail.UserDetail;
 
 public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
-    private final PropertiesConfiguration propertiesConfiguration;
-    private final SecretKey secretKey;
-    private final TokenProvider tokenProvider;
 
-    public JwtUsernamePasswordAuthenticationFilter(TokenProvider tokenProvider,AuthenticationManager authenticationManager, PropertiesConfiguration propertiesConfiguration, SecretKey secretKey) {
-        this.tokenProvider = tokenProvider;
-        this.authenticationManager = authenticationManager;
-        this.propertiesConfiguration = propertiesConfiguration;
-        this.secretKey = secretKey;
+  private final AuthenticationManager authenticationManager;
+  private final PropertiesConfiguration propertiesConfiguration;
+  private final SecretKey secretKey;
+  private final JwtProvider jwtService;
+
+  public JwtUsernamePasswordAuthenticationFilter(
+      AuthenticationManager authenticationManager,
+      PropertiesConfiguration propertiesConfiguration, SecretKey secretKey,
+      JwtProvider jwtService) {
+    this.authenticationManager = authenticationManager;
+    this.propertiesConfiguration = propertiesConfiguration;
+    this.secretKey = secretKey;
+    this.jwtService = jwtService;
+  }
+
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+
+    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+    String token = httpServletRequest.getHeader(propertiesConfiguration.getAuthorizationHeader());
+
+    try {
+      Jws<Claims> claimsJws = Jwts.parser()
+          .setSigningKey(secretKey)
+          .parseClaimsJws(token);
+
+      Claims body = claimsJws.getBody();
+      UserDetail userDetail = new UserDetail();
+      userDetail.setId(((Number) body.get("id")).longValue());
+      userDetail.setUsername((String) body.get("username"));
+
+      List<Map<String, String>> authority = (List<Map<String, String>>) body.get("authorities");
+
+      Set<SimpleGrantedAuthority> grantetAuth = authority.stream()
+          .map(m -> new SimpleGrantedAuthority(m.get("authority")))
+          .collect(Collectors.toSet());
+
+      Authentication authentication = new UsernamePasswordAuthenticationToken(
+          userDetail,
+          null,
+          grantetAuth
+      );
+
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    } catch (JwtException e) {
+      return;
     }
-
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        try {
-            UsernameAndPasswordDto accountDAO = new ObjectMapper().readValue(request.getInputStream(), UsernameAndPasswordDto.class);
-
-            Authentication authentication;
-
-            if (accountDAO == null) {
-                authentication = new UsernamePasswordAuthenticationToken("","");
-            }
-            else
-                authentication = new UsernamePasswordAuthenticationToken(
-                        accountDAO.getUsername(),
-                        accountDAO.getPassword()
-                );
-
-            Authentication authenticate = authenticationManager.authenticate(authentication);
-
-            return authenticate;
-        } catch (JsonParseException e){
-            System.out.println("error Json Parse");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        UserDetail userDetail = (UserDetail) authResult.getPrincipal();
-
-        String token = tokenProvider.generateToken(userDetail);
-
-        response.addHeader(propertiesConfiguration.getAuthorizationHeader(),token);
-
-        // return response successful login
-        response.setContentType("json");
-        ResponseEntity<?> entityResponse = new ResponseEntity<>(HttpStatus.OK.value(), "Login Successful. Has a Token response for you !!!", token);
-
-        String entityResponce = new ObjectMapper().writeValueAsString(entityResponse);
-
-        response.getWriter().write(entityResponce);
-        response.getWriter().flush();
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        // return response error
-
-        response.setContentType("json;charset=ISO-8859-1");
-
-        ResponseEntity<?> entityResponse = new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE.value(), "username or password is not correct", null);
-
-        String entityresponce = new ObjectMapper().writeValueAsString(entityResponse);
-
-        response.getWriter().write(entityresponce);
-        response.getWriter().flush();
-    }
+    chain.doFilter(request, response);
+  }
 }
