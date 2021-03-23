@@ -21,7 +21,7 @@ public interface BaseRepository<Entity extends BaseEntity,DTO extends BaseDTO,ID
   Optional<Entity> findById(ID id);
 
   @Transactional(readOnly = true)
-  @Query("select e from #{#entityName} e where e.id = ?1")
+  @Query("select e from #{#entityName} e")
   Page<Entity> search(DTO dto, Pageable pageable);
 
   @Override
