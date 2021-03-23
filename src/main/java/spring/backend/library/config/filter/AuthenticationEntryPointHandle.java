@@ -20,7 +20,7 @@ public final class AuthenticationEntryPointHandle implements
   public void commence(HttpServletRequest request,
       HttpServletResponse httpServletResponse, AuthenticationException e)
       throws IOException, ServletException {
-    ResponseEntity response = new ResponseEntity(401,
+    ResponseEntity response = new ResponseEntity(403,
         Message.getMessage("AuthenticationEntryPointImpl.invalidToken"));
 
     ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED, httpServletResponse, response.getMessage());

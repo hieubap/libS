@@ -18,7 +18,7 @@ public class AccessDeniedHandle implements AccessDeniedHandler {
   @Override
   public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
       AccessDeniedException e) throws IOException, ServletException {
-    ResponseEntity response = new ResponseEntity(400, Message
+    ResponseEntity response = new ResponseEntity(401, Message
         .getMessage("AccessDeniedHandle.handleAccessDeniedException"));
     ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED,httpServletResponse,response.getMessage());
 
