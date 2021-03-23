@@ -1,25 +1,43 @@
 package spring.backend.library.config.filter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import spring.backend.library.config.security.PropertiesConfiguration;
+import spring.backend.library.config.userdetail.Authority;
+import spring.backend.library.config.userdetail.UserDetail;
 
 @Service
 public class JwtProvider {
 
-  @Autowired
-  private SecretKey secretKey;
+  public JwtProvider(SecretKey secretKey) {
+    this.secretKey = secretKey;
+  }
+
+  private final SecretKey secretKey;
 
   public Map<String, Object> generateToken(JwtTokenProperties jwtTokenProperties) {
     Long id = jwtTokenProperties.getId();
@@ -53,11 +71,10 @@ public class JwtProvider {
         .claim("username", username)
         .claim("fullname", fullName)
         .claim("authorities", privileges);
-    if (jwtAdditionalInformation != null) {
-      for (String key : jwtAdditionalInformation.keySet()) {
-        jwtBuilder.claim(key, jwtAdditionalInformation.get(key));
-        additionalInformation.put(key, jwtAdditionalInformation.get(key));
-      }
+    for (String key : jwtAdditionalInformation.keySet()) {
+      jwtBuilder.claim(key, jwtAdditionalInformation.get(key));
+      additionalInformation.put(key, jwtAdditionalInformation.get(key));
+
     }
 
     String jwt = jwtBuilder
@@ -66,6 +83,23 @@ public class JwtProvider {
         .signWith(secretKey)
         .compact();
 
+    UserDetail userDetail = new UserDetail();
+    userDetail.setId(id);
+    userDetail.setUsername(username);
+    List<GrantedAuthority> authorities = new ArrayList<>();
+    for (String s : privileges
+    ) {
+      authorities.add(new Authority(s));
+    }
+
+    Authentication authentication = new UsernamePasswordAuthenticationToken(
+        userDetail,
+        null,
+        authorities
+    );
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
     additionalInformation.put("tokenId", UUID.randomUUID().toString());
     additionalInformation.put("token", jwt);
     additionalInformation.put("username", username);
@@ -73,6 +107,29 @@ public class JwtProvider {
     additionalInformation.put("authorities", privileges);
 
     return additionalInformation;
+  }
+
+  public UsernamePasswordAuthenticationToken getAuthentication( String token) {
+
+    JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
+
+     Jws claimsJws = jwtParser.parseClaimsJws(token);
+
+     Claims claims = (Claims) claimsJws.getBody();
+
+    Long id = Long.valueOf(claims.get("id").toString());
+    String username = (String) claims.get("username");
+     Collection authorities =
+        Arrays.stream(claims.get("authorities").toString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+
+    UserDetail userDetails = new UserDetail();
+
+    userDetails.setId(id);
+    userDetails.setUsername(username);
+    userDetails.setAuthorities(authorities);
+    return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
   }
 
   @Getter
