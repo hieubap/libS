@@ -6,14 +6,17 @@ import spring.backend.library.dto.ResponseEntity;
 
 public class BaseResponseController {
 
-  protected ResponseEntity<?> response(Object data) {
-    ResponseEntity<?> responseBody = new ResponseEntity<>(data);
+  protected ResponseEntity response(Object data) {
+    ResponseEntity responseBody = new ResponseEntity(data);
     responseBody.setCode(200);
     responseBody.setMessage("successful");
 
     if (data instanceof Page) {
       Page<?> page = CastUtils.cast(data);
+      responseBody.setTotalPages(page.getTotalPages());
       responseBody.setTotalElements(page.getTotalElements());
+      responseBody.setPageSize(page.getSize());
+      responseBody.setPageNumber(page.getNumber());
       responseBody.setNumberOfElements(page.getNumberOfElements());
       responseBody.setData(page.getContent());
     }

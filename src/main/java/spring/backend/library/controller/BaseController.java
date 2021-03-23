@@ -20,23 +20,23 @@ BaseResponseController{
   public abstract Service getService();
 
   @GetMapping
-  public ResponseEntity<?> search(DTO dto,
+  public ResponseEntity search(DTO dto,
       @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
     return response(getService().search(dto,pageable));
   }
 
   @PostMapping
-  public ResponseEntity<?> create(@Valid @RequestBody DTO dto){
+  public ResponseEntity create(@Valid @RequestBody DTO dto){
     return response(getService().save(dto));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable Long id,@RequestBody DTO dto){
+  public ResponseEntity update(@PathVariable Long id,@RequestBody DTO dto){
     return response(getService().save(id,dto));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id){
+  public ResponseEntity delete(@PathVariable Long id){
     getService().delete(id);
     return response(null);
   }

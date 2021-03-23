@@ -12,15 +12,15 @@ public class ErrorHandleController extends ResponseEntityExceptionHandler{
 
   @ResponseStatus(code = HttpStatus.BAD_REQUEST)
   @ExceptionHandler(BaseException.class)
-  public ResponseEntity<?> handleBaseException(BaseException ex) {
-    ResponseEntity<?> responseBody = ex.getResponseBody();
+  public ResponseEntity handleBaseException(BaseException ex) {
+    ResponseEntity responseBody = ex.getResponseBody();
 
     return responseBody;
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<?> handleException(Exception ex) {
-    ResponseEntity<?> responseBody = new ResponseEntity<>();
+  public ResponseEntity handleException(Exception ex) {
+    ResponseEntity responseBody = new ResponseEntity();
     responseBody.setCode(400);
     responseBody.setMessage(ex.getMessage());
 
