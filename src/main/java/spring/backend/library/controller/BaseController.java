@@ -1,11 +1,13 @@
 package spring.backend.library.controller;
 
+import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,4 +42,16 @@ BaseResponseController{
     getService().delete(id);
     return response(null);
   }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity update(@PathVariable Long id, @RequestBody Map<String,Object> dto){
+    return response(getService().save(id, dto));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity getByid(@PathVariable Long id){
+    return response(getService().findDTO(id));
+  }
+
+
 }

@@ -7,9 +7,15 @@ import spring.backend.library.dto.BaseDTO;
 
 public interface BaseService<DTO extends BaseDTO> {
   Page<DTO> search(DTO dto, Pageable pageable);
+
   DTO save(DTO dto);
+
   DTO save(Long id,DTO dto);
-  DTO save(Long id, Map<String,Object> map);
-  void delete(Long size);
+
+  DTO save(Long id, Map<String,Object> dto);
+
+  void delete(Long id);
+
   DTO findDTO(Long id);
+
 }

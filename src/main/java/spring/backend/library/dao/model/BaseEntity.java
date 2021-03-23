@@ -1,5 +1,10 @@
 package spring.backend.library.dao.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -16,15 +21,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 @NoArgsConstructor
 public abstract class BaseEntity {
-  @Column(name = "created_at",nullable = false,updatable = false)
-  @CreatedDate
-  private ZonedDateTime createdAt;
 
-  @Column(name = "updated_at",nullable = false)
+  @Column(name = "create_at", nullable = false, updatable = false)
+  @CreatedDate
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  protected LocalDateTime createAt;
+
+  @Column(name = "update_at", nullable = false)
   @LastModifiedDate
-  private ZonedDateTime updatedAt;
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  protected LocalDateTime updateAt;
 
   @Column(name = "created_by", nullable = false)
   @CreatedBy
@@ -36,18 +47,6 @@ public abstract class BaseEntity {
 
   @Column(name = "deleted",nullable = false)
   private Short deleted = 0;
-
-  public void setAuditProperties(ZonedDateTime createdAt,Long createdBy,
-      ZonedDateTime updatedAt, Long updatedBy) {
-    this.createdBy = createdBy;
-    this.createdAt = createdAt;
-    this.updatedBy = updatedBy;
-    this.updatedAt = updatedAt;
-  }
-  public void setAuditProperties(ZonedDateTime createdAt,ZonedDateTime updatedAt) {
-    this.createdBy = createdBy;
-    this.createdAt = createdAt;
-  }
 
   public abstract void setId(Long id);
 

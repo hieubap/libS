@@ -1,10 +1,13 @@
 package spring.backend.library.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import javax.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.CastUtils;
 import spring.backend.library.dto.BaseDTO;
 import spring.backend.library.dao.model.BaseEntity;
 import spring.backend.library.dao.repository.BaseRepository;
@@ -17,6 +20,8 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   extends MapperService<Entity,DTO> implements BaseService<DTO> {
 
   protected abstract Repository getRepository();
+
+  private final ObjectMapper mapper = new ObjectMapper();
 
   @Override
   @Cacheable
@@ -67,7 +72,18 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
 
   @Override
   public DTO save(Long id, Map<String, Object> map) {
-    return null;
+    Entity model = getById(id);
+    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    Map<String, Object> map1 = mergeMap(map, mapper.convertValue(model, Map.class));
+    Entity entity = mapper.convertValue(map1, getEntityClass());
+    DTO dto = mapToDTO(entity);
+    dto.setId(id);
+    mapToEntity(dto, model);
+    model.setId(id);
+
+    getRepository().save(model);
+    return dto;
+
   }
 
   protected DTO save(Entity entity,DTO dto){
@@ -95,5 +111,17 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   @Override
   public DTO findDTO(Long id) {
     return mapToDTO(getRepository().findById(id).get());
+  }
+
+  private Map<String, Object> mergeMap(Map<String, Object> from, Map<String, Object> to) {
+    from.forEach((key, newValue) -> {
+      Object oldValue = to.get(key);
+      if ((oldValue instanceof Map) && (newValue instanceof Map)) {
+        to.put(key, mergeMap(CastUtils.cast(newValue), CastUtils.cast(oldValue)));
+      } else {
+        to.put(key, newValue);
+      }
+    });
+    return to;
   }
 }
