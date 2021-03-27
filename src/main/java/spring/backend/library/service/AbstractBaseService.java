@@ -1,18 +1,21 @@
 package spring.backend.library.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.CastUtils;
-import spring.backend.library.dto.BaseDTO;
 import spring.backend.library.dao.model.BaseEntity;
 import spring.backend.library.dao.repository.BaseRepository;
+import spring.backend.library.dto.BaseDTO;
+import spring.backend.library.exception.BaseException;
 import spring.backend.library.exception.DataException;
 import spring.backend.library.map.MapperService;
+import spring.backend.library.utils.MapperUtils;
 
 @Transactional
 public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends BaseDTO,
@@ -72,18 +75,26 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
 
   @Override
   public DTO save(Long id, Map<String, Object> map) {
+    if (id == null || id.compareTo(0L) <= 0) {
+      throw new DataException.NotFoundEntityById(id, getName());
+    }
+
+    if (map == null) {
+      throw new BaseException(400,"json is null");
+    }
+
     Entity model = getById(id);
-    mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-    Map<String, Object> map1 = mergeMap(map, mapper.convertValue(model, Map.class));
-    Entity entity = mapper.convertValue(map1, getEntityClass());
-    DTO dto = mapToDTO(entity);
+//    model.setMapAllProperties(true);
+
+    map = mergeMap(map, MapperUtils.convertValue(mapToDTO(model)));
+
+    DTO dto = MapperUtils.convertValue(map, getDtoClass());
+
     dto.setId(id);
     mapToEntity(dto, model);
     model.setId(id);
 
-    getRepository().save(model);
-    return dto;
-
+    return save(model, dto);
   }
 
   protected DTO save(Entity entity,DTO dto){

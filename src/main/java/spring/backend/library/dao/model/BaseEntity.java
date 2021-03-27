@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
@@ -41,14 +40,22 @@ public abstract class BaseEntity {
   @CreatedBy
   private Long createdBy;
 
-  @Column(name = "updated_by",nullable = false)
+  @Column(name = "updated_by", nullable = false)
   @LastModifiedBy
   private Long updatedBy;
 
-  @Column(name = "deleted",nullable = false)
+  @Column(name = "deleted", nullable = false)
   private Short deleted = 0;
 
   public abstract void setId(Long id);
 
   public abstract Long getId();
+
+  public void setAuditProperties(LocalDateTime createAt, Long createdBy, LocalDateTime updateAt,
+      Long updatedBy) {
+    this.createAt = createAt;
+    this.createdBy = createdBy;
+    this.updateAt = updateAt;
+    this.updatedBy = updatedBy;
+  }
 }
