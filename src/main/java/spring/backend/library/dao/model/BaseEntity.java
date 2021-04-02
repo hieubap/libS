@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,6 +47,9 @@ public abstract class BaseEntity {
 
   @Column(name = "deleted", nullable = false)
   private Short deleted = 0;
+
+  @Transient
+  private Boolean mapAllProperties = false;
 
   public abstract void setId(Long id);
 

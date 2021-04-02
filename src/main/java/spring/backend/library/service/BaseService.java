@@ -17,6 +17,5 @@ public interface BaseService<DTO extends BaseDTO> {
 
   void delete(Long id);
 
-  DTO findDTO(Long id);
-
+  DTO findById(Long id);
 }

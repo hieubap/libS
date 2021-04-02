@@ -21,9 +21,14 @@ BaseResponseController{
 
   public abstract Service getService();
 
+  @GetMapping("/{id}")
+  public ResponseEntity getDetail(@PathVariable Long id) {
+    return response(getService().findById(id));
+  }
+
   @GetMapping
   public ResponseEntity search(DTO dto,
-      @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+      @PageableDefault(size = 2000, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
     return response(getService().search(dto,pageable));
   }
 
@@ -47,11 +52,4 @@ BaseResponseController{
   public ResponseEntity update(@PathVariable Long id, @RequestBody Map<String,Object> dto){
     return response(getService().save(id, dto));
   }
-
-  @GetMapping("/{id}")
-  public ResponseEntity getByid(@PathVariable Long id){
-    return response(getService().findDTO(id));
-  }
-
-
 }

@@ -110,6 +110,13 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   }
 
   @Override
+  public DTO findById(Long id) {
+    Entity entity = getRepository().findById(id).get();
+    entity.setMapAllProperties(true);
+    return mapToDTO(entity);
+  }
+
+  @Override
   public void delete(Long id) {
     getRepository().deleteById(id);
   }
@@ -117,11 +124,6 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   public Entity getById(Long id){
     return getRepository().findById(id)
         .orElseThrow(() -> new DataException.NotFoundEntityById(id, getName()));
-  }
-
-  @Override
-  public DTO findDTO(Long id) {
-    return mapToDTO(getRepository().findById(id).get());
   }
 
   private Map<String, Object> mergeMap(Map<String, Object> from, Map<String, Object> to) {
