@@ -100,7 +100,7 @@ public class JwtProvider {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    additionalInformation.put("tokenId", UUID.randomUUID().toString());
+    additionalInformation.put("userId", userDetail.getId());
     additionalInformation.put("token", jwt);
     additionalInformation.put("username", username);
     additionalInformation.put("full_name", fullName);
