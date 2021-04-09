@@ -79,7 +79,7 @@ public class JwtProvider {
 
     String jwt = jwtBuilder
         .setIssuedAt(new Date())
-        .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
+        .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(1)))
         .signWith(secretKey)
         .compact();
 

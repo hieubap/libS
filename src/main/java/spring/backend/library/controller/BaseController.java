@@ -28,7 +28,7 @@ BaseResponseController{
 
   @GetMapping
   public ResponseEntity search(DTO dto,
-      @PageableDefault(size = 2000, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+      @PageableDefault(size = 200, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
     return response(getService().search(dto,pageable));
   }
 
