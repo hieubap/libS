@@ -39,6 +39,8 @@ public class Config extends WebSecurityConfigurerAdapter {
     ;
 
     http.csrf().disable()
+        .cors()
+        .and()
         .addFilterBefore(new JwtFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling().accessDeniedHandler(accessDeniedHandle)
         .and()
