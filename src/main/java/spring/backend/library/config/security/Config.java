@@ -1,9 +1,6 @@
 package spring.backend.library.config.security;
 
-import com.google.common.collect.ImmutableList;
 import javax.crypto.SecretKey;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,14 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import spring.backend.library.config.filter.AccessDeniedHandle;
 import spring.backend.library.config.filter.AuthenticationEntryPointHandle;
 import spring.backend.library.config.filter.JwtFilter;
-import spring.backend.library.config.filter.JwtProvider;
 
 @Configuration
 @EnableWebSecurity
@@ -54,7 +46,7 @@ public class Config extends WebSecurityConfigurerAdapter {
         .and()
         .authorizeRequests()
         .antMatchers(HttpMethod.POST,"/users").permitAll()
-        .antMatchers(HttpMethod.POST,"/users/login,").permitAll()
+        .antMatchers("/users/login,").permitAll()
         .and().authorizeRequests().anyRequest().authenticated();
 
   }
