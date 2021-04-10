@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 public final class ResponseUtil {
 
@@ -18,10 +17,10 @@ public final class ResponseUtil {
   }
 
   public static String convertObjectToJson(Object object) throws JsonProcessingException {
-        if (object == null) {
-            return null;
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(object);
+    if (object == null) {
+      return null;
     }
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper.writeValueAsString(object);
+  }
 }
