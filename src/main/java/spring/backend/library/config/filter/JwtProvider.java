@@ -105,6 +105,7 @@ public class JwtProvider {
     additionalInformation.put("username", username);
     additionalInformation.put("full_name", fullName);
     additionalInformation.put("authorities", privileges);
+    additionalInformation.put("role",jwtTokenProperties.getRole());
 
     return additionalInformation;
   }
@@ -120,8 +121,11 @@ public class JwtProvider {
     Long id = Long.valueOf(claims.get("id").toString());
     String username = (String) claims.get("username");
 
+    String arrayAuthorize = claims.get("authorities").toString();
+
     Collection authorities =
-        Arrays.stream(claims.get("authorities").toString().split(","))
+        Arrays.stream(arrayAuthorize
+            .substring(1,arrayAuthorize.length()-1).split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
@@ -142,6 +146,8 @@ public class JwtProvider {
     private final String username;
 
     private final String fullName;
+
+    private final String role;
 
     private final List<String> privileges;
 

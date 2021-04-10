@@ -57,14 +57,14 @@ public class Config extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
 //        .antMatchers(HttpMethod.GET,"/courses").permitAll()
 //        .antMatchers(HttpMethod.POST,"/users").permitAll()
-//        .antMatchers(HttpMethod.GET,unauthorization).permitAll()
-        .and().authorizeRequests().anyRequest().authenticated();
+        .antMatchers(HttpMethod.GET,unauthorization).permitAll()
+        .anyRequest().authenticated();
 
   }
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/users/login");
+    web.ignoring().antMatchers("/users/login","/users/register");
   }
 
 }
