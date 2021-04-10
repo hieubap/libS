@@ -1,5 +1,6 @@
 package spring.backend.library.config.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +20,12 @@ public final class AuthenticationEntryPointHandle implements
   @Override
   public void commence(HttpServletRequest request,
       HttpServletResponse httpServletResponse, AuthenticationException e)
-      throws IOException, ServletException {
+      throws IOException {
     ResponseEntity response = new ResponseEntity(401,
         Message.getMessage("AuthenticationEntryPointImpl.invalidToken"));
 
-    ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED, httpServletResponse, response.getMessage());
+    ObjectMapper objectMapper = new ObjectMapper();
+    ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED, httpServletResponse,
+        objectMapper.writeValueAsString(response));
   }
 }
