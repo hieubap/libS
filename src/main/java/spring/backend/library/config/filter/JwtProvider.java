@@ -59,13 +59,13 @@ public class JwtProvider {
       privileges = new ArrayList<>();
     }
 
-    if (id != null && id > 0) {
-      privileges.add("ROLE_Authenticated");
-    }
-
-    if (!privileges.contains("ROLE_Unauthenticated")) {
-      privileges.add("ROLE_Unauthenticated");
-    }
+//    if (id != null && id > 0) {
+//      privileges.add("ROLE_Authenticated");
+//    }
+//
+//    if (!privileges.contains("ROLE_Unauthenticated")) {
+//      privileges.add("ROLE_Unauthenticated");
+//    }
     JwtBuilder jwtBuilder = Jwts.builder()
         .claim("id", id)
         .claim("username", username)
@@ -119,7 +119,8 @@ public class JwtProvider {
 
     Long id = Long.valueOf(claims.get("id").toString());
     String username = (String) claims.get("username");
-     Collection authorities =
+
+    Collection authorities =
         Arrays.stream(claims.get("authorities").toString().split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());

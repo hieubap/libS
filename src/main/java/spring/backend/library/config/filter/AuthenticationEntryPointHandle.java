@@ -23,6 +23,7 @@ public final class AuthenticationEntryPointHandle implements
     ResponseEntity response = new ResponseEntity(401,
         Message.getMessage("AuthenticationEntryPointImpl.invalidToken"));
 
-    ResponseUtil.writeResponse(HttpStatus.UNAUTHORIZED, httpServletResponse, response.getMessage());
+    ResponseUtil.writeResponse(HttpStatus.OK, httpServletResponse,
+        ResponseUtil.convertObjectToJson(response));
   }
 }

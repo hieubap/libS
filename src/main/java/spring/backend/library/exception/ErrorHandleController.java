@@ -10,19 +10,19 @@ import spring.backend.library.dto.ResponseEntity;
 @RestControllerAdvice
 public class ErrorHandleController extends ResponseEntityExceptionHandler{
 
-  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+//  @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+//  @ExceptionHandler(BaseException.class)
+//  public ResponseEntity handleBaseException(BaseException ex) {
+//    ResponseEntity responseBody = ex.getResponseBody();
+//
+//    return responseBody;
+//  }
+
   @ExceptionHandler(BaseException.class)
-  public ResponseEntity handleBaseException(BaseException ex) {
-    ResponseEntity responseBody = ex.getResponseBody();
-
-    return responseBody;
-  }
-
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity handleException(Exception ex) {
+  public ResponseEntity handleException(BaseException ex) {
     ResponseEntity responseBody = new ResponseEntity();
-    responseBody.setCode(400);
-    responseBody.setMessage(ex.getMessage());
+    responseBody.setCode(ex.getResponseBody().getCode());
+    responseBody.setMessage(ex.getResponseBody().getMessage());
 
     return responseBody;
   }

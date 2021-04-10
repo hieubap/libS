@@ -1,6 +1,7 @@
 package spring.backend.library.config.security;
 
 import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -25,6 +26,9 @@ public class Config extends WebSecurityConfigurerAdapter {
 
   private final SecretKey secretKey;
 
+  @Value("${unauthorization}")
+  private String listUnAuthorization;
+
   public Config(AccessDeniedHandle accessDeniedHandle,
       AuthenticationEntryPointHandle authenticationEntryPointHandle, SecretKey secretKey
   ) {
@@ -38,6 +42,10 @@ public class Config extends WebSecurityConfigurerAdapter {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     ;
 
+    String[] unauthorization = listUnAuthorization.split(",");
+    for(String s : unauthorization)
+    System.out.println(s);
+
     http.csrf().disable()
         .cors()
         .and()
@@ -47,15 +55,16 @@ public class Config extends WebSecurityConfigurerAdapter {
         .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
         .and()
         .authorizeRequests()
-        .antMatchers(HttpMethod.POST,"/users").permitAll()
-        .antMatchers("/users/login,").permitAll()
+//        .antMatchers(HttpMethod.GET,"/courses").permitAll()
+//        .antMatchers(HttpMethod.POST,"/users").permitAll()
+//        .antMatchers(HttpMethod.GET,unauthorization).permitAll()
         .and().authorizeRequests().anyRequest().authenticated();
 
   }
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/users/login", "/users");
+    web.ignoring().antMatchers("/users/login");
   }
 
 }

@@ -20,7 +20,8 @@ public class AccessDeniedHandle implements AccessDeniedHandler {
       AccessDeniedException e) throws IOException, ServletException {
     ResponseEntity response = new ResponseEntity(403, Message
         .getMessage("AccessDeniedHandle.handleAccessDeniedException"));
-    ResponseUtil.writeResponse(HttpStatus.FORBIDDEN,httpServletResponse,response.getMessage());
+    ResponseUtil.writeResponse(HttpStatus.OK,httpServletResponse,
+        ResponseUtil.convertObjectToJson(response));
 
   }
 }
