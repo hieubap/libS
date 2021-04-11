@@ -14,9 +14,6 @@ class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
 
   @Override
   public Optional<Long> getCurrentAuditor() {
-    if (!isSecurity){
-      return Optional.of(1L);
-    }
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if (authentication == null || !authentication.isAuthenticated()
