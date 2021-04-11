@@ -67,7 +67,7 @@ public class JwtProvider {
 //      privileges.add("ROLE_Unauthenticated");
 //    }
     JwtBuilder jwtBuilder = Jwts.builder()
-        .claim("id", id)
+        .claim("userId", id)
         .claim("username", username)
         .claim("fullname", fullName)
         .claim("authorities", privileges);
@@ -118,7 +118,7 @@ public class JwtProvider {
 
      Claims claims = (Claims) claimsJws.getBody();
 
-    Long id = Long.valueOf(claims.get("id").toString());
+    Long id = Long.valueOf(claims.get("userId").toString());
     String username = (String) claims.get("username");
 
     String arrayAuthorize = claims.get("authorities").toString();
