@@ -37,7 +37,7 @@ public abstract class BaseEntity {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   protected LocalDateTime updateAt;
 
-  @Column(name = "created_by", nullable = false)
+  @Column(name = "created_by", nullable = false, updatable = false)
   @CreatedBy
   private Long createdBy;
 
