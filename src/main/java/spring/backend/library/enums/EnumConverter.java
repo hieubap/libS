@@ -26,13 +26,7 @@ public class EnumConverter<E extends IEnum> implements AttributeConverter<E, Sho
   @Override
   public E convertToEntityAttribute(Short dbData) {
     if (dbData != null) {
-      return Arrays.stream(enumClass.getEnumConstants()).filter(e -> {
-        if (e.getValue() == dbData) {
-          return true;
-        }
-        throw new IllegalArgumentException("Unknown database value:" + dbData);
-
-      })
+      return Arrays.stream(enumClass.getEnumConstants()).filter(e -> e.getValue() == dbData)
           .findFirst().get();
     }
     return null;
