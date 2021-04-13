@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +17,7 @@ import spring.backend.library.dto.BaseDTO;
 import spring.backend.library.dto.ResponseEntity;
 import spring.backend.library.service.BaseService;
 
+@CrossOrigin
 public abstract class BaseController<DTO extends BaseDTO, Service extends BaseService<DTO>> extends
 BaseResponseController{
 
