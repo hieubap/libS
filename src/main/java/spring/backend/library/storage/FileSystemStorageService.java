@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileSystemStorageService implements StorageService {
 
-  @Value("{file.upload-dir}")
+  @Value("${file.upload-dir}")
   private String dirUpload;
 
   private final Path root = Paths.get(dirUpload);
