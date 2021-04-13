@@ -16,7 +16,7 @@ public class FileSystemStorageService implements StorageService {
   @Value("${file.upload-dir}")
   private String dirUpload;
 
-  private final Path root = Paths.get(dirUpload);
+  private final Path root = Paths.get("uploads");
 
   @Override
   public void init() {
