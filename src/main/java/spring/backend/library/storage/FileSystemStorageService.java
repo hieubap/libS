@@ -12,10 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileSystemStorageService implements StorageService {
-
-  @Value("${file.upload-dir}")
-  private String dirUpload;
-
   private final Path root = Paths.get("uploads");
 
   @Override
@@ -32,9 +28,14 @@ public class FileSystemStorageService implements StorageService {
     try {
       if(!Files.exists(root)){
         init();
+        System.out.println("root not exist and create: "+root);
       }
+      System.out.println("root: "+root);
       Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()),
           StandardCopyOption.REPLACE_EXISTING);
+      System.out.println("root: "+root);
+      System.out.println("originFilename"+file.getOriginalFilename());
+
     } catch (Exception e) {
       throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
     }
