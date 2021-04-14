@@ -16,6 +16,7 @@ public class Message {
     messageSource = new ReloadableResourceBundleMessageSource();
     messageSource.addBasenames("classpath:msg/common_messages");
     messageSource.setDefaultEncoding("UTF-8");
+    LocaleContextHolder.setDefaultLocale(Message.getLocaleDefault());
 
     return messageSource;
   }

@@ -8,9 +8,13 @@ public class BaseResponseController {
 
   protected ResponseEntity response(Object data) {
     ResponseEntity responseBody = new ResponseEntity(data);
-    responseBody.setCode(200);
-    responseBody.setMessage("successful");
-
+    if (data instanceof ResponseEntity){
+      responseBody = (ResponseEntity) data;
+    }
+    else {
+      responseBody.setCode(200);
+      responseBody.setMessage("successful");
+    }
     if (data instanceof Page) {
       Page<?> page = CastUtils.cast(data);
       responseBody.setTotalPages(page.getTotalPages());
