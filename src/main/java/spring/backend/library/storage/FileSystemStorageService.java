@@ -35,6 +35,8 @@ public class FileSystemStorageService implements StorageService {
           StandardCopyOption.REPLACE_EXISTING);
       System.out.println("root: "+root);
       System.out.println("originFilename"+file.getOriginalFilename());
+      System.out.println("originFilename"+this.root.resolve(file.getOriginalFilename()));
+
 
     } catch (Exception e) {
       throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
