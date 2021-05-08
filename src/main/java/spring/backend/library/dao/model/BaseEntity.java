@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
@@ -21,27 +22,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter
 @NoArgsConstructor
 public abstract class BaseEntity {
 
-  @Column(name = "create_at", nullable = false, updatable = false)
+  @Column(name = "create_at",nullable = false,updatable = false)
   @CreatedDate
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  protected LocalDateTime createAt;
+  private ZonedDateTime createdAt;
 
-  @Column(name = "update_at", nullable = false)
+  @Column(name = "update_at",nullable = false)
   @LastModifiedDate
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  protected LocalDateTime updateAt;
+  private ZonedDateTime updatedAt;
 
-  @Column(name = "created_by", nullable = false, updatable = false)
+  @Column(name = "created_by", nullable = false)
   @CreatedBy
   private Long createdBy;
 
-  @Column(name = "updated_by", nullable = false)
+  @Column(name = "updated_by",nullable = false)
   @LastModifiedBy
   private Long updatedBy;
 
@@ -51,15 +47,18 @@ public abstract class BaseEntity {
   @Transient
   private Boolean mapAllProperties = false;
 
+  public void setMapAllProperties (Boolean value){
+    this.mapAllProperties = value;
+  }
   public abstract void setId(Long id);
 
   public abstract Long getId();
 
-  public void setAuditProperties(LocalDateTime createAt, Long createdBy, LocalDateTime updateAt,
+  public void setAuditProperties(ZonedDateTime createAt, Long createdBy, ZonedDateTime updateAt,
       Long updatedBy) {
-    this.createAt = createAt;
+    this.createdAt = createAt;
     this.createdBy = createdBy;
-    this.updateAt = updateAt;
+    this.updatedAt = updateAt;
     this.updatedBy = updatedBy;
   }
 }
