@@ -44,4 +44,12 @@ public class BaseDTO {
   @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
   private Long updatedBy;
+
+  public void setNull(){
+    this.createdAt = null;
+    this.createdBy = null;
+    this.updatedAt = null;
+    this.updatedBy = null;
+
+  }
 }

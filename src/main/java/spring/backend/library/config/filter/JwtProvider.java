@@ -103,6 +103,7 @@ public class JwtProvider {
     additionalInformation.put("userId", userDetail.getId());
     additionalInformation.put("token", jwt);
     additionalInformation.put("username", username);
+    additionalInformation.put("avatar", jwtTokenProperties.getAvatar());
     additionalInformation.put("full_name", fullName);
     additionalInformation.put("authorities", privileges);
     additionalInformation.put("role",jwtTokenProperties.getRole());
@@ -148,6 +149,8 @@ public class JwtProvider {
     private final String fullName;
 
     private final String role;
+
+    private final String avatar;
 
     private final List<String> privileges;
 
