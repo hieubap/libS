@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseEntity {
-  private Integer code = 0;
+  private Integer code = 200;
   private String message = null;
   private Object data = null;
 
