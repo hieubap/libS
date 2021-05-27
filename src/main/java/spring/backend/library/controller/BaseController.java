@@ -25,7 +25,7 @@ BaseResponseController{
 
   @GetMapping("/{id}")
   public ResponseEntity getDetail(@PathVariable Long id) {
-    return response(getService().findById(id));
+    return response(getService().findDetailById(id));
   }
 
   @GetMapping

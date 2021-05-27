@@ -110,9 +110,16 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   }
 
   @Override
-  public DTO findById(Long id) {
+  public DTO findDetailById(Long id) {
     Entity entity = getRepository().findById(id).get();
     entity.setMapAllProperties(true);
+    return mapToDTO(entity);
+  }
+
+  @Override
+  public DTO findById(Long id) {
+    Entity entity = getRepository().findById(id).get();
+    entity.setMapAllProperties(false);
     return mapToDTO(entity);
   }
 
