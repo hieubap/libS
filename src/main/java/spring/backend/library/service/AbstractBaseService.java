@@ -118,14 +118,19 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
 
   @Override
   public DTO findById(Long id) {
-    Entity entity = getRepository().findById(id).get();
+    Entity entity = getById(id);
     entity.setMapAllProperties(false);
     return mapToDTO(entity);
+  }
+
+  protected void beforeDelete(Long id){
+
   }
 
   @Override
   public void delete(Long id) {
     getRepository().deleteById(id);
+    beforeDelete(id);
   }
 
   public Entity getById(Long id){
