@@ -33,11 +33,11 @@ public abstract class BaseEntity {
   @LastModifiedDate
   private ZonedDateTime updatedAt;
 
-  @Column(name = "created_by", nullable = false)
+  @Column(name = "created_by")
   @CreatedBy
   private Long createdBy;
 
-  @Column(name = "updated_by",nullable = false)
+  @Column(name = "updated_by")
   @LastModifiedBy
   private Long updatedBy;
 
