@@ -57,6 +57,66 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   }
 
   @Override
+  public List<DTO> save(List<DTO> dtos) {
+    if (dtos == null || dtos.isEmpty()) {
+      throw new DataException.NotExistData();
+    }
+
+    List<Entity> entities = new ArrayList<>();
+
+    dtos.forEach(dto -> {
+      Entity model;
+      if (dto.getId() != null) {
+        model = getById(dto.getId());
+        mapToEntity(dto, model);
+        model.setId(dto.getId());
+      } else {
+        model = mapToEntity(dto);
+      }
+      entities.add(model);
+    });
+
+
+    return save(entities, dtos);
+  }
+
+  protected void beforeSave(List<Entity> entities, List<DTO> dtos) {
+    int size = entities.size();
+    for (int i = 0; i < size; i++) {
+      Entity entity = entities.get(i);
+      DTO dto = dtos.get(i);
+      beforeSave(entity, dto);
+    }
+  }
+  protected void afterSave(List<Entity> entities, List<DTO> dtos) {
+    int size = entities.size();
+    for (int i = 0; i < size; i++) {
+      Entity entity = entities.get(i);
+      DTO dto = dtos.get(i);
+      afterSave(entity, dto);
+    }
+  }
+
+  protected List<DTO> save(List<Entity> entities, List<DTO> dtos) {
+    beforeSave(entities, dtos);
+
+    entities = getRepository().saveAll(entities);
+
+    int size = entities.size();
+
+    afterSave(entities, dtos);
+
+    for (int i = 0; i < size; i++) {
+      DTO dto = dtos.get(i);
+      Entity entity = entities.get(i);
+
+      mapToDTO(entity, dto);
+    }
+
+    return dtos;
+  }
+
+  @Override
   public DTO save(Long id, DTO dto) {
     if (dto == null){
       throw new DataException.NotExistData();
@@ -120,6 +180,13 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
   public DTO findById(Long id) {
     Entity entity = getById(id);
     entity.setMapAllProperties(false);
+    return mapToDTO(entity);
+  }
+
+  @Override
+  public DTO findById(Long id, boolean mapAllProperties) {
+    Entity entity = getById(id);
+    entity.setMapAllProperties(mapAllProperties);
     return mapToDTO(entity);
   }
 

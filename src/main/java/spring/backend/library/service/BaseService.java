@@ -11,6 +11,8 @@ public interface BaseService<DTO extends BaseDTO> {
 
   DTO save(DTO dto);
 
+  List<DTO> save(List<DTO> dto);
+
   DTO save(Long id,DTO dto);
 
   DTO save(Long id, Map<String,Object> dto);
@@ -20,4 +22,6 @@ public interface BaseService<DTO extends BaseDTO> {
   DTO findDetailById(Long id);
 
   DTO findById(Long id);
+
+  DTO findById(Long id,boolean mapAllProperties);
 }

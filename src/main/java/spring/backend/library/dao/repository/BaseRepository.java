@@ -1,5 +1,6 @@
 package spring.backend.library.dao.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,6 +30,11 @@ public interface BaseRepository<Entity extends BaseEntity,DTO extends BaseDTO,ID
   @Transactional
   @Modifying
   <S extends Entity> S save(S entity);
+
+
+  @Override
+  @CacheEvict(allEntries = true)
+  <S extends Entity> List<S> saveAll(Iterable<S> entities);
 
   @Cacheable
   @Override

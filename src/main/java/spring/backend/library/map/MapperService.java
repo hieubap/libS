@@ -17,13 +17,13 @@ public abstract class MapperService<Entity extends BaseEntity,DTO extends BaseDT
     entityClass = CastUtils.cast(((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     dtoClass = CastUtils.cast(((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]);
     modelMapper = Mapper.getDefaultModelMapper();
-    config(modelMapper);
+    configMap(modelMapper);
 
     getModelMapper().map(getDTO(),getEntity());
     getModelMapper().map(getEntity(),getDTO());
 
   }
-  protected void config(ModelMapper mapper){
+  protected void configMap(ModelMapper mapper){
 
   }
 
