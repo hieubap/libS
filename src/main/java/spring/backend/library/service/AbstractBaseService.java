@@ -194,10 +194,15 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
 
   }
 
+  protected void afterDelete(Long id){
+
+  }
+
   @Override
   public void delete(Long id) {
-    getRepository().deleteById(id);
     beforeDelete(id);
+    getRepository().deleteById(id);
+    afterDelete(id);
   }
 
   public Entity getById(Long id){
