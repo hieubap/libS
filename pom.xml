@@ -8,11 +8,12 @@
 		<version>2.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>spring.common.library</groupId>
-	<artifactId>common</artifactId>
-	<version>Library</version>
-	<name>common</name>
-	<description>All common use for Spring Boot</description>
+
+	<groupId>common.spring</groupId>
+	<artifactId>common-spring</artifactId>
+	<version>1.0</version>
+	<name>common-spring</name>
+	<description>common spring library</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

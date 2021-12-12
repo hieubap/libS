@@ -1,43 +1,41 @@
 package spring.backend.library.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public class ResponseEntity<T> {
-  private Integer code;
-  private String message;
-  private Object data;
-  private Integer numberOfElements;
+@NoArgsConstructor
+@ToString
+public class ResponseEntity {
+  private Integer code = 0;
+  private String message = null;
+  private Object data = null;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Long totalElements;
 
-  public ResponseEntity(){
-    this.numberOfElements = 1;
-    totalElements = (long) numberOfElements;
-  }
-  public ResponseEntity(T data){
-    this();
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Integer totalPages;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Integer pageNumber;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Integer pageSize;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
+  private Integer numberOfElements;
+
+  public ResponseEntity(Integer code, String message, Object data) {
+    this.code = code;
+    this.message = message;
     this.data = data;
   }
   public ResponseEntity(Integer code, String message){
-    this();
-    this.code = code;
-    this.message = message;
-  }
-
-  public ResponseEntity(Integer code, String message, T data) {
-    this();
-    this.code = code;
-    this.message = message;
-    this.data = data;
-  }
-
-  public ResponseEntity(Integer code, String message, T data,Integer numberOfElements,Long totalElements) {
-    this.code = code;
-    this.message = message;
-    this.data = data;
-    this.numberOfElements = numberOfElements;
-    this.totalElements = totalElements;
+    this(code, message, null);
   }
 }
