@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>common.spring</groupId>
-	<artifactId>common-spring</artifactId>
+	<groupId>core.spring</groupId>
+	<artifactId>core-spring</artifactId>
 	<version>1.0</version>
-	<name>common-spring</name>
-	<description>common spring library</description>
+	<name>core-spring</name>
+	<description>core spring boot</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
