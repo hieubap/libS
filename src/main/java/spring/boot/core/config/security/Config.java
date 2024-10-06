@@ -40,32 +40,36 @@ public class Config extends WebSecurityConfigurerAdapter {
 
   protected void configure(HttpSecurity http) throws Exception {
     http
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    ;
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     String[] unauthorization = listUnAuthorization.split(",");
-    for(String s : unauthorization)
-    System.out.println(s);
+    for(String s : unauthorization){
+      System.out.println(s);
+    }
 
     http.csrf().disable()
         .cors()
         .and()
         .addFilterBefore(new JwtFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
         .exceptionHandling().accessDeniedHandler(accessDeniedHandle)
-        .and()
-        .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
+//        .and()
+//        .exceptionHandling().authenticationEntryPoint(authenticationEntryPointHandle)
         .and()
         .authorizeRequests()
         .antMatchers(HttpMethod.PUT,unauthorization).permitAll()
         .antMatchers(HttpMethod.POST,unauthorization).permitAll()
         .antMatchers(HttpMethod.GET,unauthorization).permitAll()
-        .anyRequest().authenticated();
-
+        .anyRequest().authenticated()
+    ;
   }
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/users/login","/users/register");
+    web.ignoring().antMatchers("/users/login",
+            "/users/register",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api-docs/**");
   }
 
 }

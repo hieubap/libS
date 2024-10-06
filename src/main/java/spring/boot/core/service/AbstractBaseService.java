@@ -6,6 +6,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.CastUtils;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import spring.boot.core.config.userdetail.UserPrincipal;
 import spring.boot.core.dao.model.BaseEntity;
 import spring.boot.core.dao.repository.BaseRepository;
 import spring.boot.core.dto.BaseDTO;
@@ -21,8 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 @Transactional
-public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends BaseDTO,
-    Repository extends BaseRepository<Entity,DTO,Long>>
+public abstract class AbstractBaseService<
+        Entity extends BaseEntity,
+        DTO extends BaseDTO,
+        Repository extends BaseRepository<Entity,DTO,Long>>
   extends MapperService<Entity,DTO> implements BaseService<DTO> {
 
   protected abstract Repository getRepository();
@@ -214,6 +220,11 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
     afterDelete(id);
   }
 
+  @Override
+  public Boolean existedById(Long id){
+    return getRepository().existsById(id);
+  }
+
   public Entity getById(Long id){
     return getRepository().findById(id)
         .orElseThrow(() -> new DataException.NotFoundEntityById(id, getName()));
@@ -229,5 +240,16 @@ public abstract class AbstractBaseService<Entity extends BaseEntity,DTO extends 
       }
     });
     return to;
+  }
+
+  @Override
+  public Long getCurrentUserId() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()
+            || authentication instanceof AnonymousAuthenticationToken) {
+      return null;
+    }
+    UserPrincipal userDetail = (UserPrincipal) authentication.getPrincipal();
+    return userDetail.getId();
   }
 }

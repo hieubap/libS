@@ -3,6 +3,8 @@ package spring.boot.core.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,28 +17,26 @@ import java.time.ZonedDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonFormat
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseDTO {
   @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
   private Long id;
 
-  @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
-//  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-//  @JsonSerialize(using = LocalDateTimeSerializer.class)
-  @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+  @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+  @JsonSerialize(using = ZonedDateTimeSerializer.class)
   private ZonedDateTime createdAt;
 
-  @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
-  @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+  @JsonDeserialize(using = ZonedDateTimeDeserializer.class)
+  @JsonSerialize(using = ZonedDateTimeSerializer.class)
   private ZonedDateTime updatedAt;
 
-  @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
   private Long createdBy;
 
-  @JsonInclude(Include.NON_NULL)
   @ApiModelProperty(hidden = true)
   private Long updatedBy;
 

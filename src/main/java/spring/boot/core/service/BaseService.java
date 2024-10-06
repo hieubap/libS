@@ -25,4 +25,8 @@ public interface BaseService<DTO extends BaseDTO> {
   DTO findById(Long id);
 
   DTO findById(Long id,boolean mapAllProperties);
+
+  public Long getCurrentUserId();
+
+  public Boolean existedById(Long id);
 }

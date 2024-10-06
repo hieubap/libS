@@ -23,7 +23,7 @@ BaseResponseController{
   }
 
   @GetMapping
-  public ResponseDTO search(DTO dto,
+  public ResponseDTO search(@ModelAttribute DTO dto,
                             @PageableDefault(size = 200, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
     return response(getService().search(dto,pageable));
   }
