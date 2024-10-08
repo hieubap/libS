@@ -252,4 +252,14 @@ public abstract class AbstractBaseService<
     UserPrincipal userDetail = (UserPrincipal) authentication.getPrincipal();
     return userDetail.getId();
   }
+
+  @Override
+  public UserPrincipal getTokenInfo() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()
+            || authentication instanceof AnonymousAuthenticationToken) {
+      return null;
+    }
+    return (UserPrincipal) authentication.getPrincipal();
+  }
 }

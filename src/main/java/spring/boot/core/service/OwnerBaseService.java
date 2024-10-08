@@ -4,6 +4,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import spring.boot.core.dao.model.BaseEntity;
+import spring.boot.core.dao.model.OwnerBaseEntity;
 import spring.boot.core.dao.repository.BaseRepository;
 import spring.boot.core.dao.repository.OwnerBaseRepository;
 import spring.boot.core.dto.BaseDTO;
@@ -12,7 +13,7 @@ import spring.boot.core.exception.BaseException;
 import java.util.Objects;
 
 public class OwnerBaseService<
-        Entity extends BaseEntity,
+        Entity extends OwnerBaseEntity,
         DTO extends BaseDTO,
         Repository extends OwnerBaseRepository<Entity,DTO,Long>>
         extends AbstractBaseService<Entity, DTO, Repository>{
@@ -31,7 +32,7 @@ public class OwnerBaseService<
 
     @Override
     public DTO mapToDTO(Entity entity) {
-        if(entity.getId() != null && !Objects.equals(entity.getCreatedBy(), getCurrentUserId())){
+        if(!entity.ignoreOwner && entity.getId() != null && !Objects.equals(entity.getCreatedBy(), getCurrentUserId())){
             throw new BaseException(1000, "Dữ liệu không thuộc về bạn");
         }
         return super.mapToDTO(entity);

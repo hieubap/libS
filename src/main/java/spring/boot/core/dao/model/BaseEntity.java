@@ -39,6 +39,9 @@ public abstract class BaseEntity {
   @Column(name = "deleted", nullable = false)
   private Short deleted = 0;
 
+  @Column(name = "active", nullable = false)
+  protected Short active = 1;
+
   @Transient
   private Boolean mapAllProperties = false;
 

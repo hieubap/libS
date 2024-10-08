@@ -2,6 +2,7 @@ package spring.boot.core.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import spring.boot.core.config.userdetail.UserPrincipal;
 import spring.boot.core.dto.BaseDTO;
 
 import java.util.List;
@@ -26,7 +27,9 @@ public interface BaseService<DTO extends BaseDTO> {
 
   DTO findById(Long id,boolean mapAllProperties);
 
-  public Long getCurrentUserId();
+  Long getCurrentUserId();
 
-  public Boolean existedById(Long id);
+  Boolean existedById(Long id);
+
+  UserPrincipal getTokenInfo();
 }
