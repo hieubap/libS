@@ -39,6 +39,7 @@ public class ErrorHandleController extends ResponseEntityExceptionHandler{
     ResponseDTO responseBody = new ResponseDTO();
     responseBody.setCode(ex.getResponseBody().getCode());
     responseBody.setMessage(ex.getResponseBody().getMessage());
+    responseBody.setData(ex.getResponseBody().getData());
 
     return responseBody;
   }

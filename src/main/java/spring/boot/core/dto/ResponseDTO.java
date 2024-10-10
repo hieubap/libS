@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 public class ResponseDTO {
   private Integer code = 0;
   private String message = null;
+
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private Object data = null;
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
