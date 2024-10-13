@@ -2,6 +2,7 @@ package spring.boot.core.dao.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -36,6 +37,7 @@ public abstract class BaseEntity {
   @LastModifiedBy
   private Long updatedBy;
 
+  @Setter
   @Column(name = "deleted", nullable = false)
   private Short deleted = 0;
 
