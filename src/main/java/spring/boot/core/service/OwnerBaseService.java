@@ -39,18 +39,18 @@ public class OwnerBaseService<
     }
 
     @Override
-    protected void beforeSave(Entity entity, DTO dto) {
+    protected DTO save(Entity entity, DTO dto) {
         if(entity.getId() != null && !Objects.equals(entity.getCreatedBy(), getCurrentUserId())){
             throw new BaseException(1000, "Dữ liệu không thuộc về bạn");
         }
-        super.beforeSave(entity, dto);
+        return super.save(entity, dto);
     }
 
     @Override
-    protected void beforeDelete(Long id) {
+    public void delete(Long id) {
         if(!getRepository().ownerOfId(id, getCurrentUserId())){
             throw new BaseException(1000, "Dữ liệu không thuộc về bạn");
         }
-        super.beforeDelete(id);
+        super.delete(id);
     }
 }

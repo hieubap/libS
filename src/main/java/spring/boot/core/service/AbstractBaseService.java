@@ -33,12 +33,33 @@ public abstract class AbstractBaseService<
 
   protected abstract Repository getRepository();
 
-  private final ObjectMapper mapper = new ObjectMapper();
-
   @Autowired
   private StorageService storageService;
   final protected StorageService getStorageService() {
     return storageService;
+  }
+
+  protected List<DTO> save(List<Entity> entities, List<DTO> dtos) {
+    entities = getRepository().saveAll(entities);
+
+    int size = entities.size();
+
+    for (int i = 0; i < size; i++) {
+      DTO dto = dtos.get(i);
+      Entity entity = entities.get(i);
+
+      mapToDTO(entity, dto);
+    }
+
+    return dtos;
+  }
+
+  protected DTO save(Entity entity,DTO dto){
+    getRepository().save(entity);
+
+    mapToDTO(entity,dto);
+
+    return dto;
   }
 
   @Override
@@ -47,11 +68,6 @@ public abstract class AbstractBaseService<
     return getRepository().search(dto,pageable).map(this::mapToDTO);
   }
 
-  protected void beforeSave(Entity entity,DTO dto){
-  }
-  protected void afterSave(Entity entity,DTO dto){
-
-  }
   @Override
   public DTO save(DTO dto) {
     if (dto == null){
@@ -95,42 +111,6 @@ public abstract class AbstractBaseService<
     return save(entities, dtos);
   }
 
-  protected void beforeSave(List<Entity> entities, List<DTO> dtos) {
-    int size = entities.size();
-    for (int i = 0; i < size; i++) {
-      Entity entity = entities.get(i);
-      DTO dto = dtos.get(i);
-      beforeSave(entity, dto);
-    }
-  }
-  protected void afterSave(List<Entity> entities, List<DTO> dtos) {
-    int size = entities.size();
-    for (int i = 0; i < size; i++) {
-      Entity entity = entities.get(i);
-      DTO dto = dtos.get(i);
-      afterSave(entity, dto);
-    }
-  }
-
-  protected List<DTO> save(List<Entity> entities, List<DTO> dtos) {
-    beforeSave(entities, dtos);
-
-    entities = getRepository().saveAll(entities);
-
-    int size = entities.size();
-
-    afterSave(entities, dtos);
-
-    for (int i = 0; i < size; i++) {
-      DTO dto = dtos.get(i);
-      Entity entity = entities.get(i);
-
-      mapToDTO(entity, dto);
-    }
-
-    return dtos;
-  }
-
   @Override
   public DTO save(Long id, DTO dto) {
     if (dto == null){
@@ -172,18 +152,6 @@ public abstract class AbstractBaseService<
     return save(model, dto);
   }
 
-  protected DTO save(Entity entity,DTO dto){
-    beforeSave(entity,dto);
-
-    getRepository().save(entity);
-
-    afterSave(entity,dto);
-
-    mapToDTO(entity,dto);
-
-    return dto;
-  }
-
   @Override
   public DTO findDetailById(Long id) {
     Entity entity = getRepository().findById(id).get();
@@ -205,19 +173,9 @@ public abstract class AbstractBaseService<
     return mapToDTO(entity);
   }
 
-  protected void beforeDelete(Long id){
-
-  }
-
-  protected void afterDelete(Long id){
-
-  }
-
   @Override
   public void delete(Long id) {
-    beforeDelete(id);
     getRepository().deleteById(id);
-    afterDelete(id);
   }
 
   @Override
