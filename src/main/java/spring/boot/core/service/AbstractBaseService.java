@@ -188,7 +188,7 @@ public abstract class AbstractBaseService<
         .orElseThrow(() -> new DataException.NotFoundEntityById(id, getName()));
   }
 
-  private Map<String, Object> mergeMap(Map<String, Object> from, Map<String, Object> to) {
+  protected Map<String, Object> mergeMap(Map<String, Object> from, Map<String, Object> to) {
     from.forEach((key, newValue) -> {
       Object oldValue = to.get(key);
       if ((oldValue instanceof Map) && (newValue instanceof Map)) {
