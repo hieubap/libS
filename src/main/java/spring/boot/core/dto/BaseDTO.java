@@ -40,7 +40,7 @@ public class BaseDTO {
   @ApiModelProperty(hidden = true)
   private Long updatedBy;
 
-  protected Short active;
+  protected Boolean active = true;
 
   public void setNull(){
     this.createdAt = null;

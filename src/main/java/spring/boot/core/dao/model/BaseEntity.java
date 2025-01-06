@@ -38,11 +38,11 @@ public abstract class BaseEntity {
   private Long updatedBy;
 
   @Setter
-  @Column(name = "deleted", nullable = false)
-  private Short deleted = 0;
+  @Column(name = "deleted")
+  private Boolean deleted = false;
 
-  @Column(name = "active", nullable = false)
-  protected Short active = 1;
+  @Column(name = "active")
+  protected Boolean active = true;
 
   @Transient
   private Boolean mapAllProperties = false;

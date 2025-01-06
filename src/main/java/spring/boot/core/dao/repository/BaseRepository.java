@@ -47,7 +47,7 @@ public interface BaseRepository<Entity extends BaseEntity,DTO extends BaseDTO,ID
   @Override
   @Transactional
   @Modifying
-  @Query(value = "update #{#entityName} e set e.deleted = 1 "
+  @Query(value = "update #{#entityName} e set e.deleted = true "
       + " where e.id = ?#{#id} ")
   void deleteById(ID id);
 

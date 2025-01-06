@@ -74,7 +74,7 @@ public abstract class MapperService<Entity extends BaseEntity,DTO extends BaseDT
     return getModelMapper().map(entity,getDtoClass());
   }
 
-  protected void mapToDTO(Entity entity,DTO dto){
+  public void mapToDTO(Entity entity,DTO dto){
     getModelMapper().map(entity,dto);
   }
 }
